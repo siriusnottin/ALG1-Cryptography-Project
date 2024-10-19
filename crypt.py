@@ -54,7 +54,7 @@
 # def subst_dec(cipher_text, key):
 
 
-#def break_subst(cipher_text):
+# def break_subst(cipher_text):
 
 
 # def lire_clef_poly(nom_fichier):
