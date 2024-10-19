@@ -1,7 +1,17 @@
 #!/usr/bin/env python3
 # type: ignore
 
+import logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+# try:
+#   donuts_per_guest = donuts / guests
+# except ZeroDivisionError:
+#   logging.exception("DonutCalculationError")
+
 def lire(nom_fichier):
+  logger.info(f'Reading file {nom_fichier}')
   f = open(nom_fichier, 'r')
   f_content = f.read()
   f.close()
