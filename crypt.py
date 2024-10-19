@@ -22,8 +22,8 @@ def ecrire(nom_fichier, texte):
   f = open(nom_fichier, 'w')
   f.write(texte)
   
-# def minuscules(texte):
-
+def minuscules(texte):
+  return texte.lower()
 
 # def shift_enc(plain_text, key):
 
