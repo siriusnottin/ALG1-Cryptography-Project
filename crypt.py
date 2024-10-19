@@ -70,5 +70,3 @@
 
 
 # def poly_dec(cipher_text, key):
-
-
