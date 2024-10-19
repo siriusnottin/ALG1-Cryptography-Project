@@ -17,9 +17,11 @@ def lire(nom_fichier):
   f.close()
   return f_content
 
-# def ecrire(nom_fichier, texte):
-
-
+def ecrire(nom_fichier, texte):
+  logger.info(f'Writting file {nom_fichier}')
+  f = open(nom_fichier, 'w')
+  f.write(texte)
+  
 # def minuscules(texte):
 
 
