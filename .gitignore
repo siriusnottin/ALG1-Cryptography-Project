@@ -1,6 +1,7 @@
 # Python Project
 *.txt
 *.pdf
+!requirements.txt
 
 # General
 .DS_Store
