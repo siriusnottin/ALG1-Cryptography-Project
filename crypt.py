@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # type: ignore
 
-# def lire(nom_fichier):
-
+def lire(nom_fichier):
+  f = open(nom_fichier, 'r')
+  f_content = f.read()
+  f.close()
+  return f_content
 
 # def ecrire(nom_fichier, texte):
 
