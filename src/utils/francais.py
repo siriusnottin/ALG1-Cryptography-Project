@@ -1,0 +1,2 @@
+def francais(texte):
+  pass

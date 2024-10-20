@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Python Debugger: Launch Main Program",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/__main__.py",
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      // "stopOnEntry": true,
+      "autoReload": {
+        "enabled": true,
+      },
+      "envFile": "${workspaceFolder}/dev.env",
+    }
+  ]
+}
