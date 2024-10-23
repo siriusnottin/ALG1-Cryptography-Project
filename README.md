@@ -4,6 +4,14 @@
 
 Ce projet consiste à mettre en place un chiffrement par décalage et de le casser, puis un chiffrement par substitution monoalphabétique et de le casser, et finalement mettre en place un chiffrement par substitution polyalphabétique.
 
+## Developpement
+
+```bash
+pyenv virtualenv 3.12 alg1
+pyenv local alg1
+pip install -r requirements.txt
+```
+
 ## Fichiers
 
 chiffrés et déchiffrés, et les clefs :
