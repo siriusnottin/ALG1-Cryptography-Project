@@ -1,5 +1,9 @@
 # ALG1 : Projet Cryptographie
 
+## Description
+
+Ce projet consiste à mettre en place un chiffrement par décalage et de le casser, puis un chiffrement par substitution monoalphabétique et de le casser, et finalement mettre en place un chiffrement par substitution polyalphabétique.
+
 ## Fichiers
 
 chiffrés et déchiffrés, et les clefs :
