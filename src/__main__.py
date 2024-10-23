@@ -29,11 +29,8 @@ PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, os.pardir))
 DATA_DIR = os.path.join(PROJECT_ROOT, os.getenv("DATA_DIR", "data"))
 
 if __name__ == "__main__":
-    log.info("Starting the program")
-    log.debug("SCRIPT_DIR: %s", SCRIPT_DIR)
-    log.debug("PROJECT_ROOT: %s", PROJECT_ROOT)
-    log.debug("DATA_DIR: %s", DATA_DIR)
     try:
-        pass
+        log.info("Starting the program")
+        log.info("Program finished")
     except Exception as e:
         log.exception("Something went wrong: %s", e)
