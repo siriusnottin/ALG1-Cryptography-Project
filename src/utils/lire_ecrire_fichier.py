@@ -1,3 +1,4 @@
+# Author: @Alex
 def lire(nom_fichier, log):
     log.info(f"Reading file {nom_fichier}")
     f = open(nom_fichier, "r")
@@ -6,6 +7,7 @@ def lire(nom_fichier, log):
     return f_content
 
 
+# Author: @Alex
 def ecrire(nom_fichier, texte, log):
     log.info(f"Writting file {nom_fichier}")
     f = open(nom_fichier, "w")
