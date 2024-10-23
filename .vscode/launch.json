@@ -9,9 +9,17 @@
       "internalConsoleOptions": "openOnSessionStart",
       // "stopOnEntry": true,
       "autoReload": {
-        "enabled": true,
+        "enabled": true
       },
-      "envFile": "${workspaceFolder}/dev.env",
+      "envFile": "${workspaceFolder}/dev.env"
+    },
+    {
+      "name": "Python: Tests",
+      "type": "python",
+      "request": "test",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "envFile": "${workspaceFolder}/dev.env"
     }
   ]
 }
