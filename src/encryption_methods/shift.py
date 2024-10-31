@@ -1,3 +1,5 @@
+# Chiffrement par décalage
+
 # Author: Alex
 def shift_enc(plain_text, key, log):
     # a:65 z:90
