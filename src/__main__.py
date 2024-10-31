@@ -34,3 +34,7 @@ if __name__ == "__main__":
         log.info("Program finished")
     except Exception as e:
         log.exception("Something went wrong: %s", e)
+
+
+if __name__ == "__main__":
+    main()
