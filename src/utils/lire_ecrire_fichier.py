@@ -12,3 +12,4 @@ def ecrire(nom_fichier, texte, log):
     log.info(f"Writting file {nom_fichier}")
     f = open(nom_fichier, "w")
     f.write(texte)
+    f.close()
