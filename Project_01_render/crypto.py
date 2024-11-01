@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# TODO: remove shebang. It may be missinterpreted as off-topic
 
 import string
 
@@ -7,16 +6,17 @@ from unidecode import unidecode
 
 
 def lire(nom_fichier):
-    f = open(nom_fichier, "r")
-    f_content = f.read()
-    f.close()
-    return f_content
+    file = open(nom_fichier, "r")
+    file_content = file.read()
+    file.close()
+    return file_content
 
 
 def ecrire(nom_fichier, texte):
-    f = open(nom_fichier, "w")
-    f.write(texte)
-    f.close()
+    file = open(nom_fichier, "w")
+    file.write(str(texte))
+    file.close()
+    return None
 
 
 def minuscules(texte):
@@ -24,45 +24,42 @@ def minuscules(texte):
 
 
 def shift_enc(plain_text, key):
-    ligne = (
-        plain_text.splitlines()
-    )  # Ce bloc va découper le texte pour ne prendre que les lignes
-    if len(ligne) > 100:
-        plain_text = "\n".join(
-            ligne[:100]
-        )  # sous forme d'une liste et les mettre en chaine de caractère. le \n est pour le saut de ligne et le [:100] pour le nb de lignes
-    l = []  # l va être ma variable pour stocker les lettres en ord)
-    plain_text_maj = plain_text.upper()  # Cette fonction va permettre que la chaine de caractère de se transformer en majuscule et permettre à ma boucle while d'être pleinement fonctionnelle
-    plain_text_maj_accent = unidecode(plain_text_maj)  #
+    l = []
+    plain_text_maj = plain_text.upper()
+    plain_text_maj_accent = unidecode(plain_text_maj)
 
     for lettre in plain_text_maj_accent:
         if "A" <= lettre <= "Z":
             chiffrement = ord(lettre)
-            chiffrement += key  # On rajoute la key choisi augmenter la valeur ASCII
-            while (
-                chiffrement > 90
-            ):  # boucle qui permet de revenir au début de l'alphabet
+            chiffrement += key
+            while chiffrement > 90:  # make sure its alphabetical
                 chiffrement -= 26
             chiffrement = chr(chiffrement)
             l.append(chiffrement)
         else:
             l.append(str(lettre))
-        k = "".join(l)  # k va être ma variable pour permettre d'enlever la liste
+        k = "".join(l)
     return k
 
 
 def shift_dec(cipher_text, key):
     decrypted_text = ""
     for letter in cipher_text:
-        letter_unshifted = chr(ord(letter) - key).lower()
-        decrypted_text += letter_unshifted
+        if letter.isalpha():
+            letter_unshifted = chr(ord(letter) - key).lower()
+            decrypted_text += letter_unshifted
+        else:
+            decrypted_text += letter
     return decrypted_text
 
 
 # 2.3 Chiffrer texte
-def shift_enc_file(file_path, key):
-    file_content = lire(file_path)
-    return shift_enc(file_content, key)
+def shift_enc_file_mono_int(key):  # need to be called to encrypt file content
+    text_encrypted = shift_enc_file(
+        "Les_Miserables2.txt", key
+    )  # Les_Miserables is too heavy to be processed. Created second file limited to the first 100 lines of og file
+    ecrire("Les_Miserables_decalage.txt.", text_encrypted)
+    ecrire("key_shift.txt", key)
 
 
 def compter_lettres_minuscules(texte):
@@ -76,7 +73,6 @@ def compter_lettres_minuscules(texte):
 
 
 def compter_lettres_majuscules(texte):
-    # get all uppercase letters
     upper_letters = ""
     for letter in texte:
         if ord("A") <= ord(letter) <= ord("Z"):
@@ -92,7 +88,6 @@ def compter_lettres_majuscules(texte):
 def max_lettres(freq_lettres):
     nums = list(freq_lettres.values())
     current_max_num = nums[0]
-    # we sort the max_num list by descending order and get the first element that wil be our max
     for num in nums:
         if current_max_num < num:
             current_max_num = num
@@ -102,8 +97,7 @@ def max_lettres(freq_lettres):
 
 
 def chaine_en_mots(texte):
-    l = texte.split()
-    return l
+    return texte.split()
 
 
 def compter_mots(mots):
@@ -114,18 +108,18 @@ def compter_mots(mots):
     return words_freq
 
 
-def max_mot_1(freq_mots):
-    texte = ""  # A voir
-    d = {}
-    # TODO: call `compter_mots` fn DRY
-    texte = texte.split()
-    for mot in texte:  # boucle qui va mettre chaque mot dans le dictionnaire
-        if mot not in d:
-            d[mot] = 1
-        else:
-            d[mot] += 1
+# Used as util in `break_subst` later
+def compter_lettres(lettres):
+    letters = lettres
+    letters_freq = {letter: 0 for letter in letters}
+    for letter in letters:
+        letters_freq[letter] += 1
+    return letters_freq
 
+
+def max_mot_1(freq_mots):
     freq_mots = ""
+    d = compter_mots(freq_mots)
     max_valeur = 0
 
     for mot, valeur in d.items():
@@ -135,94 +129,80 @@ def max_mot_1(freq_mots):
     return freq_mots
 
 
-def compter_lettres(text):
-    letters_freq = {letter: 0 for letter in text}
-    for letter in text:
-        letters_freq[letter] += 1
-    return letters_freq
-
-
 def francais(texte):
-    # la lettre la plus fréquente doit être le “e”
-    # le mot à une lettre le plus fréquent doit être soit “a” soit “y”
-    freq_letters = compter_lettres(texte)
-    freq_mots = compter_mots(texte)
-    is_french = False
-    if max_lettres(freq_letters) == "e":
-        is_french = True
-    elif max_mot_1(freq_mots) in ("a", "y"):
-        is_french = True
-    return is_french
+    d = {}
+    for lettre in texte:
+        if lettre not in d:
+            d[lettre] = 1
+        else:
+            d[lettre] += 1
+
+    max_lettre = ""
+    max_valeur = 0
+    max_lettre2 = ""
+    max_valeur2 = 0
+
+    for lettre, valeur in d.items():
+        if lettre.isalpha() and valeur > max_valeur:
+            max_lettre = lettre
+            max_valeur = valeur
+        elif lettre.isalpha() and max_valeur2 < valeur < max_valeur:
+            max_lettre2 = lettre
+            max_valeur2 = valeur
+
+    if max_lettre == "e" or max_lettre2 in ("a", "i"):
+        print(texte)
+        reponse = input("Est-ce du français ? Répondez par oui ou non : ")
+        if reponse.lower() == "oui":
+            return True
+    else:
+        return False
 
 
 def break_shift(cipher_text):
-    cipher_text_sans_accent = unidecode(cipher_text)  # à supprimer à la fin
-    j = []
+    l = []
     for i in range(26):
-        cipher_text_crypt = shift_enc(cipher_text_sans_accent, i)
-        cipher_text_crypt = cipher_text_crypt.lower()
-        if francais(cipher_text_crypt):
-            j.append(i)
-    return j
+        cipher_text_decrypt = shift_enc(unidecode(cipher_text), i)
+        cipher_text_decrypt = cipher_text_decrypt.lower()
+        if francais(cipher_text_decrypt):
+            l.append(i)
+    return l
 
 
 # 3.9 Casser chiffrement
 def decrypt_shift_text():
-    file = "shift_cipher_text.txt"
-    keys = break_shift(file)
-    key = keys
-    if len(keys) > 0:
-        key = keys[0]
-    uncrypted_text = shift_dec(file, key)
-    ecrire("shift_plain_text.txt", uncrypted_text)
+    shifted_text = break_shift("shift_cipher_text.txt")
+    ecrire("shift_plain_text.txt", shifted_text)
 
 
 def lire_clef_subst(nom_fichier):
     lettre_min = string.ascii_lowercase
     l = list(lettre_min)
-    fichier = open("/home/ayu/Bureau/Projet/Fonctions/fichier_clé_mono.txt", "r")
-    contenu = fichier.read()
-    fichier.close()
+    contenu = lire("key_subst_2.txt")
     d = {}
-    for i in range(
-        len(contenu)
-    ):  # Permet de voyager dans le contenu du fichier et i est itéré au nombre de fois.
-        d[l[i % len(contenu)]] = contenu[
-            i
-        ]  # permet de prendre qu'un seul élément de la liste à ingrémenter dans le dictionnaire.
+    for i in range(len(contenu)):
+        d[l[i]] = contenu[i]
     return d
 
 
 def ecrire_clef_subst(nom_fichier, clef):
-    ecrire(nom_fichier, str(clef))
+    ecrire(nom_fichier, clef)
 
 
-def subst_enc(plain_text: str, key: dict) -> str:
-    """
-    Encrypts the given plain text using a substitution cipher defined by the key dictionary.
-
-    Args:
-        plain_text (str): The text to be encrypted.
-        key (dict): A dictionary mapping each letter of the plain text to its corresponding encrypted letter. Note: The encrypted letter will automatically by transformed in uppercase
-
-    Returns:
-        str: The encrypted text.
-    """
-    # Ensure all values in `key` are in lowercase
-    key = {k: v.lower() for k, v in key.items()}
-
-    encryted_text = ""
+def subst_enc(plain_text, key):
+    encrypted_text = ""
     for letter in plain_text:
         if letter.isupper():
-            encryted_text += key[letter.lower()].upper()
+            encrypted_text += key.get(letter.lower(), letter).upper()
+        elif letter.islower():
+            encrypted_text += key.get(letter, letter)
         else:
-            encryted_text += key[letter]
-    return encryted_text
+            encrypted_text += letter
+    return encrypted_text
 
 
 def subst_dec_key(key):
-    # Cette fonction doit déduire une clé de déchiffrement via la clé de chiffrement.
-    # ELle renvoie sous forme de dictionnaire. Sans modifier key par rapport à la 4.3
+    key = lire_clef_subst("key_subst_2.txt")
     total = lire_clef_subst(key)
     decrypt_key = {value: key for key, value in total.items()}
     d = {}
@@ -243,64 +223,59 @@ def subst_dec(cipher_text, key):
     return decrypted_text
 
 
+def shift_enc_file(file_path, key):
+    file_content = lire(file_path)
+    return subst_enc(file_content, key)
+
+
 # 4.6 Chiffrer le texte
-# TODO: Sirius change fn name to `enc_file_mono`, maybe?
-def shift_enc_text_miserables(key=3):
-    text_encrypted = shift_enc_file("Les_Miserables.txt")
+def shift_enc_file_mono_dict(key):  # need to be called to encrypt file content
+    text_encrypted = shift_enc_file(
+        "Les_Miserables2.txt", key
+    )  # Les_Miserables is too heavy to be processed. Created second file limited to the first 100 lines of og file
     ecrire("Les_Miserables_substitution.txt", text_encrypted)
-    ecrire("key_subst.txt", str(key))
+    ecrire("key_subst.txt", key)
 
 
 # 4.7 Chiffrer le fichier chiffré
 def shift_enc_text_file_miserables(key=3):
-    file_encrypted = shift_enc_file(" Les_Miserables_substitution.txt", key)
+    file_encrypted = shift_enc_file("Les_Miserables_substitution.txt", key)
     ecrire("Les_Miserables_substitution_2.txt", file_encrypted)
     ecrire("key_subst_2.txt", str(key))
 
 
 # 5.1
 def break_subst(cipher_text):
-    from collections import Counter
+    # Use only upper letters for encrypted text
+    cipher_letters = [l for l in cipher_text if l.isupper()]
+    freq = compter_lettres(cipher_letters)
 
-    # Ne considérer que les lettres majuscules pour le texte chiffré
-    cipher_letters = [c for c in cipher_text if c.isupper()]
-    freq = Counter(cipher_letters)
+    freq_sorted = sorted(freq.items(), key=lambda item: item[1], reverse=True)
 
-    # TODO: refactor sorting fn
-    # Trier les fréquences par ordre décroissant
-    freq_sorted = sorted(freq.items(), key=lambda x: x[1], reverse=True)
-
-    # Initialiser le mapping des lettres chiffrées vers les lettres en clair
     cipher_to_plain = {}
 
-    # TODO: Use the existing fn
-    # Fonction pour afficher les fréquences
     def display_frequencies():
         print("Fréquences des lettres dans le texte chiffré :")
         for letter, count in freq_sorted:
             print(f"{letter}: {count}")
 
-    # Fonction pour afficher le mapping actuel
     def display_mapping():
         print("\nMappings actuels :")
-        for c in sorted(cipher_to_plain.keys()):
-            print(f"{c} -> {cipher_to_plain[c]}")
+        for l in sorted(cipher_to_plain.keys()):
+            print(f"{l} -> {cipher_to_plain[l]}")
 
-    # TODO: Check if we can use an already existing fn
-    # Fonction pour déchiffrer le texte avec le mapping actuel
     def decrypt_text():
         decrypted = ""
-        for c in cipher_text:
-            if c.isupper():
-                if c in cipher_to_plain:
-                    decrypted += cipher_to_plain[c]
+        for l in cipher_text:
+            if l.isupper():
+                if l in cipher_to_plain:
+                    decrypted += cipher_to_plain[l]
                 else:
                     decrypted += "_"
             else:
-                decrypted += c  # Conserver les autres caractères tels quels
+                decrypted += l  # Conserver les autres caractères tels quels
         return decrypted
 
-    # Boucle principale d'interaction avec l'utilisateur
     while True:
         display_frequencies()
         display_mapping()
@@ -342,7 +317,6 @@ def break_subst(cipher_text):
             else:
                 print("Format d'entrée invalide.")
 
-    # Retourner la clé trouvée et le texte déchiffré
     return cipher_to_plain, decrypt_text()
 
 
@@ -357,11 +331,11 @@ def uncrypt_text_mono():
 def break_file_cipher_mono():
     file = "Les_Miserables_substitution_2.txt"
     (plain_text, key) = break_subst(file)
-    ecrire("double_key.txt", str(key))
+    ecrire("double_key.txt", key)
 
 
 def lire_clef_poly(nom_fichier):
-    nom_fichier = open("/home/ayu/Bureau/Projet/Fonctions/fichier_clé_poly.txt", "r")
+    nom_fichier = open("double_key.txt", "r")
     contenu = nom_fichier.read().strip()  # permet d'ignorer les espaces
     nom_fichier.close()
     k1 = []
@@ -380,17 +354,15 @@ def lire_clef_poly(nom_fichier):
 
 
 def ecrire_clef_poly(nom_fichier, clef):
-    ecrire(nom_fichier, str(clef))
+    ecrire(nom_fichier, (clef))
 
 
 def poly_enc(plain_text, key):
     lettre_min = string.ascii_lowercase
-    key = lire_clef_poly("/home/ayu/Bureau/Projet/Fonctions/fichier_clé_poly.txt")
+    key = lire_clef_poly("double_key.txt")
     chiffrement = ""
 
-    for i, lettre in enumerate(
-        plain_text
-    ):  # Permet d'avoir l'indice et la valeur de chaque élément.
+    for i, lettre in enumerate(plain_text):
         sous_clé = key[i % len(key)]  # Pour alterner les clés
         if lettre in lettre_min:
             chiffrement += sous_clé[lettre]
@@ -414,7 +386,7 @@ def poly_dec(cipher_text, key):
         if lettre in sous_clé:
             decrypted_text += sous_clé[lettre]
         else:
-            decrypted_text += lettre  # conserver les caractères non chiffrés tels quels
+            decrypted_text += lettre
     return decrypted_text
 
 
@@ -422,4 +394,4 @@ def encrypt_text_file_poly(key):
     file_content = lire("Les_Miserables.txt")
     encrypted_text = poly_enc(file_content, key)
     ecrire("Les_Miserables_polyalphabet.txt", encrypted_text)
-    ecrire("key_poly.txt", str(key))
+    ecrire("key_poly.txt", key)
