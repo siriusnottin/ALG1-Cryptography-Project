@@ -230,12 +230,16 @@ def subst_dec_key(key):
     return d
 
 
-# TODO: Alex
 def subst_dec(cipher_text, key):
-    """
-    Écrire une fonction subst_dec(cipher_text, key) qui prend une chaîne de caractères cipher_text et la clef de chiffrement sous forme de dictionnaire key et qui effectue le déchiffrement. La fonction renvoie le texte déchiffré sous forme de chaîne de caractères.
-    """
-    pass
+    decrypted_text = ""
+    for letter in cipher_text:
+        if letter.isupper():
+            decrypted_text += key[letter.lower()].upper()
+        elif letter.islower():
+            decrypted_text += key[letter]
+        else:
+            decrypted_text += letter
+    return decrypted_text
 
 
 # 4.6 Chiffrer le texte
