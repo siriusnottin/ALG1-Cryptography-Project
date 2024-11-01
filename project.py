@@ -340,3 +340,52 @@ def break_subst(cipher_text):
 
     # Retourner la clé trouvée et le texte déchiffré
     return cipher_to_plain, decrypt_text()
+
+
+def lire_clef_poly(nom_fichier):
+    nom_fichier = open("/home/ayu/Bureau/Projet/Fonctions/fichier_clé_poly.txt", "r")
+    contenu = nom_fichier.read().strip()  # permet d'ignorer les espaces
+    nom_fichier.close()
+    k1 = []
+    k2 = []
+    for i in range(len(contenu)):
+        if i < len(contenu) / 2:
+            k1.append(contenu[i])
+        else:
+            k2.append(contenu[i])
+
+    lettre_min = string.ascii_lowercase
+    d1 = {lettre_min[i]: k1[i] for i in range(len(k1))}
+    d2 = {lettre_min[i]: k2[i] for i in range(len(k2))}
+
+    return d1, d2
+
+
+def ecrire_clef_poly(nom_fichier, clef):
+    ecrire(nom_fichier, str(clef))
+
+
+def poly_enc(plain_text, key):
+    lettre_min = string.ascii_lowercase
+    key = lire_clef_poly("/home/ayu/Bureau/Projet/Fonctions/fichier_clé_poly.txt")
+    chiffrement = ""
+
+    for i, lettre in enumerate(
+        plain_text
+    ):  # Permet d'avoir l'indice et la valeur de chaque élément.
+        sous_clé = key[i % len(key)]  # Pour alterner les clés
+        if lettre in lettre_min:
+            chiffrement += sous_clé[lettre]
+        else:
+            chiffrement += lettre  # pour garder la casse et l'appliquer comme tel
+    return chiffrement
+
+
+def poly_dec_key(key):
+    total = lire_clef_poly(key)
+    decrypt_key = []
+    d = {}
+    for i in total:
+        d = {value: key for key, value in i.items()}
+        decrypt_key.append(d)
+    return decrypt_key
