@@ -271,6 +271,7 @@ def break_subst(cipher_text):
     # Initialiser le mapping des lettres chiffrées vers les lettres en clair
     cipher_to_plain = {}
 
+    # TODO: Use the existing fn
     # Fonction pour afficher les fréquences
     def display_frequencies():
         print("Fréquences des lettres dans le texte chiffré :")
@@ -283,6 +284,7 @@ def break_subst(cipher_text):
         for c in sorted(cipher_to_plain.keys()):
             print(f"{c} -> {cipher_to_plain[c]}")
 
+    # TODO: Check if we can use an already existing fn
     # Fonction pour déchiffrer le texte avec le mapping actuel
     def decrypt_text():
         decrypted = ""
@@ -342,6 +344,20 @@ def break_subst(cipher_text):
     return cipher_to_plain, decrypt_text()
 
 
+# 5.2 Déchiffrer texte
+def uncrypt_text_mono():
+    file = lire("subst_cipher_text.txt")
+    (plain_text, key) = break_subst(file)
+    ecrire("subst_plain_text.txt", plain_text)
+
+
+# 5.3 Casser et déchiffrer fichier
+def break_file_cipher_mono():
+    file = "Les_Miserables_substitution_2.txt"
+    (plain_text, key) = break_subst(file)
+    ecrire("double_key.txt", str(key))
+
+
 def lire_clef_poly(nom_fichier):
     nom_fichier = open("/home/ayu/Bureau/Projet/Fonctions/fichier_clé_poly.txt", "r")
     contenu = nom_fichier.read().strip()  # permet d'ignorer les espaces
@@ -382,10 +398,26 @@ def poly_enc(plain_text, key):
 
 
 def poly_dec_key(key):
-    total = lire_clef_poly(key)
     decrypt_key = []
-    d = {}
-    for i in total:
-        d = {value: key for key, value in i.items()}
-        decrypt_key.append(d)
+    for sub_key in key:
+        inverted_sub_key = {value: k for k, value in sub_key.items()}
+        decrypt_key.append(inverted_sub_key)
     return decrypt_key
+
+
+def poly_dec(cipher_text, key):
+    decrypted_text = ""
+    for i, lettre in enumerate(cipher_text):
+        sous_clé = key[i % len(key)]
+        if lettre in sous_clé:
+            decrypted_text += sous_clé[lettre]
+        else:
+            decrypted_text += lettre  # conserver les caractères non chiffrés tels quels
+    return decrypted_text
+
+
+def encrypt_text_file_poly(key):
+    file_content = lire("Les_Miserables.txt")
+    encrypted_text = poly_enc(file_content, key)
+    ecrire("Les_Miserables_polyalphabet.txt", encrypted_text)
+    ecrire("key_poly.txt", str(key))
