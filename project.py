@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# TODO: remove shebang. It may be missinterpreted as off-topic
 
 import string
 
