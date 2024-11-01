@@ -117,6 +117,7 @@ def compter_mots(mots):
 def max_mot_1(freq_mots):
     texte = ""  # A voir
     d = {}
+    # TODO: call `compter_mots` fn DRY
     texte = texte.split()
     for mot in texte:  # boucle qui va mettre chaque mot dans le dictionnaire
         if mot not in d:
@@ -197,7 +198,7 @@ def ecrire_clef_subst(nom_fichier, clef):
 
 
 def subst_enc(plain_text: str, key: dict) -> str:
-    """ "
+    """
     Encrypts the given plain text using a substitution cipher defined by the key dictionary.
 
     Args:
@@ -265,6 +266,7 @@ def break_subst(cipher_text):
     cipher_letters = [c for c in cipher_text if c.isupper()]
     freq = Counter(cipher_letters)
 
+    # TODO: refactor sorting fn
     # Trier les fréquences par ordre décroissant
     freq_sorted = sorted(freq.items(), key=lambda x: x[1], reverse=True)
 
