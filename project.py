@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 
+import string
+
+
 def lire(nom_fichier):
     f = open(nom_fichier, "r")
     f_content = f.read()
@@ -116,6 +119,27 @@ def decrypt_shift_text():
 
 def ecrire_clef_subst(nom_fichier, clef):
     ecrire(nom_fichier, str(clef))
+
+
+def subst_enc(plain_text, key):
+    lettre_min = string.ascii_lowercase
+    plain_text = list(lettre_min)
+    key = lire_clef_subst("/home/ayu/Bureau/Projet/Fonctions/fichier_clÃ©.txt")
+    chiffrement = ""
+    for i in range(len(key)):
+        chiffrement += key[plain_text[i]]
+    return chiffrement
+
+
+def subst_dec_key(key):
+    # Cette fonction doit déduire une clé de déchiffrement via la clé de chiffrement.
+    # ELle renvoie sous forme de dictionnaire. Sans modifier key par rapport à la 4.3
+    total = lire_clef_subst(key)
+    decrypt_key = {value: key for key, value in total.items()}
+    d = {}
+    for i in decrypt_key:
+        d[i] = decrypt_key[i]
+    return d
 
 
 def subst_enc(plain_text: str, key: dict) -> str:
