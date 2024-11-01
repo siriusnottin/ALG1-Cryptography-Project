@@ -118,5 +118,24 @@ def ecrire_clef_subst(nom_fichier, clef):
     ecrire(nom_fichier, str(clef))
 
 
-def subst_enc(plain_text, key):
-    pass
+def subst_enc(plain_text: str, key: dict) -> str:
+    """ "
+    Encrypts the given plain text using a substitution cipher defined by the key dictionary.
+
+    Args:
+        plain_text (str): The text to be encrypted.
+        key (dict): A dictionary mapping each letter of the plain text to its corresponding encrypted letter. Note: The encrypted letter will automatically by transformed in uppercase
+
+    Returns:
+        str: The encrypted text.
+    """
+    # Ensure all values in `key` are in lowercase
+    key = {k: v.lower() for k, v in key.items()}
+
+    encryted_text = ""
+    for letter in plain_text:
+        if letter.isupper():
+            encryted_text += key[letter.lower()].upper()
+        else:
+            encryted_text += key[letter]
+    return encryted_text
