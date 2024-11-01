@@ -85,13 +85,14 @@ def max_mot_1(freq_mots):
 def francais(texte):
     # la lettre la plus fréquente doit être le “e”
     # le mot à une lettre le plus fréquent doit être soit “a” soit “y”
-    is_french = False
     freq_letters = compter_lettres(texte)
     freq_mots = compter_mots(texte)
+    is_french = False
     if max_lettres(freq_letters) == "e":
         is_french = True
     elif max_mot_1(freq_mots) in ("a", "y"):
         is_french = True
+    return is_french
 
 
 def compter_mots(mots):
