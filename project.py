@@ -79,7 +79,7 @@ def compter_lettres_majuscules(texte):
     # get all uppercase letters
     upper_letters = ""
     for letter in texte:
-        if ord("A") >= letter <= ord("Z"):
+        if ord("A") <= ord(letter) <= ord("Z"):
             upper_letters += letter
 
     upper_letters_freq = {letter: 0 for letter in upper_letters}
